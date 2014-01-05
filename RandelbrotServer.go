@@ -18,18 +18,14 @@ func foo(w http.ResponseWriter, r *http.Request) {
 
     m := render()
 
-    j := randelbrot.MandelbrotSet{1.0, 1.0, 1.0}
-    t := j.EstimateMaxCount()
-    t = t + 2
-
     jpeg.Encode(w, m, nil)
 }
 
 func render() *image.RGBA {
-    maxCount := 1000
+    set := randelbrot.MandelbrotSet{-0.75, 0.0, 2.5}
+    maxCount := set.EstimateMaxCount()
     buffer := randelbrot.NewPixelBuffer(1000, 1000)
     bandMap := randelbrot.NewLogarithmicBandMap(maxCount, 32.0)
-    set := randelbrot.MandelbrotSet{-0.75, 0.0, 2.5}
 
     renderer := new(randelbrot.Renderer)
     renderer.RenderByCrawling(buffer, &set, bandMap, maxCount)
