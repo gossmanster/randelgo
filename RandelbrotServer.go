@@ -1,8 +1,8 @@
 package main
 
 import (
-    "github.com/user/randelbrot/randelbrot"
-    "github.com/user/randelbrot/utils"
+    "randelgo/randelbrot"
+    "randelgo/utils"
     "image"
     "image/jpeg"
     "net/http"
