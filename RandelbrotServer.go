@@ -9,28 +9,39 @@ import (
 )
 
 func main() {
-    http.HandleFunc("/", foo)
+
+    renderChannel := make(chan *image.RGBA, 15)
+    go render(renderChannel)
+
+    http.HandleFunc("/", func (w http.ResponseWriter, r *http.Request) {
+            w.Header().Set("Content-Type", "image/jpeg")
+
+            m := <-renderChannel
+
+            jpeg.Encode(w, m, nil)
+        })
     http.ListenAndServe(":1966", nil)
 }
 
-func foo(w http.ResponseWriter, r *http.Request) {
-    w.Header().Set("Content-Type", "image/jpeg")
 
-    m := render()
 
-    jpeg.Encode(w, m, nil)
-}
-
-func render() *image.RGBA {
-    set := randelbrot.MandelbrotSet{-0.75, 0.0, 2.5}
-    maxCount := set.EstimateMaxCount()
-    buffer := randelbrot.NewPixelBuffer(1000, 1000)
-    bandMap := randelbrot.NewLogarithmicBandMap(maxCount, 32.0)
-
+func render(renderChannel chan *image.RGBA) {
     renderer := new(randelbrot.Renderer)
-    renderer.RenderByCrawling(buffer, &set, bandMap, maxCount)
 
-    return convertToImage(buffer)
+    x := -1.6
+
+    for { 
+        set := randelbrot.MandelbrotSet{x, 0.0, 0.5}
+        maxCount := set.EstimateMaxCount()
+        buffer := randelbrot.NewPixelBuffer(1000, 1000)
+        bandMap := randelbrot.NewLogarithmicBandMap(maxCount, 32.0)
+
+
+        renderer.RenderByCrawling(buffer, &set, bandMap, maxCount)
+
+        renderChannel <- convertToImage(buffer) 
+        x += 0.1
+    }    
 }
 
 func convertToImage(buffer *randelbrot.PixelBuffer) *image.RGBA {
