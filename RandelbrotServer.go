@@ -6,11 +6,13 @@ import (
     "image"
     "image/jpeg"
     "net/http"
+    "runtime"
 )
 
 func main() {
 
-    renderChannel := make(chan *image.RGBA, 15)
+    runtime.GOMAXPROCS(2)
+    renderChannel := make(chan *image.RGBA, 10)
     go render(renderChannel)
 
     http.HandleFunc("/", func (w http.ResponseWriter, r *http.Request) {
