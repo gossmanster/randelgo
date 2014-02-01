@@ -28,18 +28,12 @@ func main() {
 
 
 func render(renderChannel chan *image.RGBA) {
-    renderer := new(randelbrot.Renderer)
-
     x := -1.6
 
     for { 
-        set := randelbrot.MandelbrotSet{x, 0.0, 0.5}
-        maxCount := set.EstimateMaxCount()
-        buffer := randelbrot.NewPixelBuffer(1000, 1000)
-        bandMap := randelbrot.NewLogarithmicBandMap(maxCount, 32.0)
-
-
-        renderer.RenderByCrawling(buffer, &set, bandMap, maxCount)
+        set := randelbrot.MandelbrotSet{x, 0.0, 1.2}
+        buffer := randelbrot.NewPixelBuffer(600, 600)
+        randelbrot.RenderToBuffer(buffer, &set)
 
         renderChannel <- convertToImage(buffer) 
         x += 0.1
