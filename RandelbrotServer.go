@@ -7,6 +7,8 @@ import (
     "image/jpeg"
     "net/http"
     "runtime"
+    "math/rand"
+    "time"
 )
 
 func main() {
@@ -28,15 +30,18 @@ func main() {
 
 
 func render(renderChannel chan *image.RGBA) {
-    x := -1.6
+    n := int64(time.Now().Nanosecond())
+
+    r := rand.New(rand.NewSource(89))
+    rand.Seed(n)
+    server := randelbrot.NewRandelbrotServer(r)
 
     for { 
-        set := randelbrot.MandelbrotSet{x, 0.0, 1.2}
+
         buffer := randelbrot.NewPixelBuffer(600, 600)
-        randelbrot.RenderToBuffer(buffer, &set)
+        server.RenderNext(buffer)
 
         renderChannel <- convertToImage(buffer) 
-        x += 0.1
     }    
 }
 
