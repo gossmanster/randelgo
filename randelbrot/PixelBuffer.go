@@ -1,7 +1,7 @@
 package randelbrot
 
 type PixelBuffer struct {
-	bits []int32
+	bits                                   []int32
 	offsetX, offsetY, sizeX, sizeY, stride int
 }
 

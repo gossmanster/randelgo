@@ -23,7 +23,7 @@ func CalculateCount(cx float64, cy float64, maxCount int) int {
 	count := 0
 
 	for ((x2 + y2) < 4.0) && (count < maxCount) {
-		ty = 2*(tx * ty) + cy
+		ty = 2*(tx*ty) + cy
 		tx = (x2 - y2) + cx
 		x2 = tx * tx
 		y2 = ty * ty

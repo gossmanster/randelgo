@@ -10,24 +10,24 @@ type RandelbrotServer struct {
 }
 
 func RenderToBuffer(buffer *PixelBuffer, set *MandelbrotSet) {
-    renderer := new(Renderer)
-    maxCount := set.EstimateMaxCount()
+	renderer := new(Renderer)
+	maxCount := set.EstimateMaxCount()
 
-	bandMap := NewLogarithmicBandMap(maxCount, 32.0)  
+	bandMap := NewLogarithmicBandMap(maxCount, 32.0)
 
-	renderer.RenderByCrawling(buffer, set, bandMap, maxCount) 
+	renderer.RenderByCrawling(buffer, set, bandMap, maxCount)
 }
 
-func (self *RandelbrotServer) randomChild(set *MandelbrotSet) (*MandelbrotSet) {
-	newSide := (self.random.Float64() * set.Side / 4.5) + set.Side / 6;
-    newCX := ((self.random.Float64() - 0.5) * set.Side / 2) + set.CenterX;
-    newCY := ((self.random.Float64() - 0.5) * set.Side / 2) + set.CenterY;
-    newSet := new(MandelbrotSet)
-    newSet.CenterY = newCX
-    newSet.Side = newSide
-    newSet.CenterY = newCY
+func (self *RandelbrotServer) randomChild(set *MandelbrotSet) *MandelbrotSet {
+	newSide := (self.random.Float64() * set.Side / 4.5) + set.Side/6
+	newCX := ((self.random.Float64() - 0.5) * set.Side / 2) + set.CenterX
+	newCY := ((self.random.Float64() - 0.5) * set.Side / 2) + set.CenterY
+	newSet := new(MandelbrotSet)
+	newSet.CenterY = newCX
+	newSet.Side = newSide
+	newSet.CenterY = newCY
 
-    return newSet
+	return newSet
 }
 
 func NewRandelbrotServer(random *rand.Rand) (server *RandelbrotServer) {
@@ -45,5 +45,3 @@ func (self *RandelbrotServer) RenderNext(buffer *PixelBuffer) {
 	RenderToBuffer(buffer, self.latest)
 	self.latest = self.randomChild(self.latest)
 }
-
-

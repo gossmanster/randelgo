@@ -36,8 +36,8 @@ func (self *bandMap) Map(count int) int32 {
 	if count >= self.maxCount {
 		return -1
 	}
-	if (count < 0) {
-	    return -1
+	if count < 0 {
+		return -1
 	}
 	return self.values[count]
 }
