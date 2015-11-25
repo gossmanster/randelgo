@@ -9,6 +9,7 @@ type bandMap struct {
 	maxCount int
 }
 
+// NewLogarithmicBandMap creates a bandMap with a logarithmic distribution of colors to iterations of the Mandelbrot function
 func NewLogarithmicBandMap(maxCount int, combinationFactor float64) *bandMap {
 	m := bandMap{make([]int32, maxCount), maxCount}
 
@@ -32,12 +33,12 @@ func NewLogarithmicBandMap(maxCount int, combinationFactor float64) *bandMap {
 	return &m
 }
 
-func (self *bandMap) Map(count int) int32 {
-	if count >= self.maxCount {
+func (bandMap *bandMap) Map(count int) int32 {
+	if count >= bandMap.maxCount {
 		return -1
 	}
 	if count < 0 {
 		return -1
 	}
-	return self.values[count]
+	return bandMap.values[count]
 }

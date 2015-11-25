@@ -29,7 +29,6 @@ func (r *Renderer) initializeCoordinateMap(sizeX int, sizeY int, set *Mandelbrot
 		y += gap
 	}
 }
-
 func setBand(x int, y int, count int, buffer *PixelBuffer, bandMap *bandMap) {
 	band := bandMap.Map(count)
 	buffer.SetValue(x, y, band)

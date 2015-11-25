@@ -5,13 +5,15 @@ import (
 	"math"
 )
 
+// Palette maps a set of colors to iteration counts
 type Palette struct {
 	Colors     []color.RGBA
 	ColorCount int
 }
 
-var MaxCountColor = color.RGBA{0x00, 0x00, 0x00, 0xff}
+var maxCountColor = color.RGBA{0x00, 0x00, 0x00, 0xff}
 
+// NewDefaultPalette creates a Palette and initializes it to an interesting set of values
 func NewDefaultPalette() *Palette {
 
 	numberColors := 1024
@@ -36,9 +38,10 @@ func NewDefaultPalette() *Palette {
 	return &retval
 }
 
-func (self *Palette) Map(value int) color.RGBA {
+// Map takes an interation count and returns the color it should use
+func (p *Palette) Map(value int) color.RGBA {
 	if value == -1 {
-		return MaxCountColor
+		return maxCountColor
 	}
-	return self.Colors[value%self.ColorCount]
+	return p.Colors[value%p.ColorCount]
 }
