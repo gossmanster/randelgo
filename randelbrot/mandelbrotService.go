@@ -1,3 +1,7 @@
+/*
+	Package randelbrot allows a user to create images of the famous Mandelbrot set fractal. More specifically,
+	it has the ability to randomly navigate the Mandelbrot Set, generating interesting images
+*/
 package randelbrot
 
 import (
