@@ -6,6 +6,7 @@ type histogram struct {
 
 func evaluateBuffer(buffer *PixelBuffer) *histogram {
 	h := new(histogram)
+	h.values = make(map[int32]int)
 	
 	for x := 0; x < buffer.SizeX(); x++ {
 		for y := 0; y < buffer.SizeY(); y++ {

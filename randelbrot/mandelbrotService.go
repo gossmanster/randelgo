@@ -24,17 +24,7 @@ func RenderToBuffer(buffer *PixelBuffer, set *MandelbrotSet) {
 	renderer.RenderByCrawling(buffer, set, bandMap, maxCount)
 }
 
-func (server *RandelbrotServer) randomChild(set *MandelbrotSet) *MandelbrotSet {
-	newSide := (server.random.Float64() * set.Side / 4.5) + set.Side/6
-	newCX := ((server.random.Float64() - 0.5) * set.Side / 2) + set.CenterX
-	newCY := ((server.random.Float64() - 0.5) * set.Side / 2) + set.CenterY
-	newSet := new(MandelbrotSet)
-	newSet.CenterY = newCX
-	newSet.Side = newSide
-	newSet.CenterY = newCY
 
-	return newSet
-}
 
 // NewRandelbrotServer creates a server
 func NewRandelbrotServer(random *rand.Rand) (server *RandelbrotServer) {
@@ -51,7 +41,39 @@ func NewRandelbrotServer(random *rand.Rand) (server *RandelbrotServer) {
 // RenderNext creates the next image in a sequence
 func (server *RandelbrotServer) RenderNext(buffer *PixelBuffer) {
 	RenderToBuffer(buffer, server.latest)
-	server.latest = server.randomChild(server.latest)
+	candidates := server.generateCandidates(server.latest)
+	best := candidates[0]
+	bestBeauty := evaluateBeauty(best)
+	for i:= 1; i < len(candidates); i++ {
+		b := evaluateBeauty(candidates[i])
+		if (b > bestBeauty) {
+			best = candidates[i]
+			bestBeauty = b
+		}
+	}
+	server.latest = best
+}
+
+func (server *RandelbrotServer) randomChild(set *MandelbrotSet) *MandelbrotSet {
+	newSide := (server.random.Float64() * set.Side / 4.5) + set.Side/6
+	newCX := ((server.random.Float64() - 0.5) * set.Side / 2) + set.CenterX
+	newCY := ((server.random.Float64() - 0.5) * set.Side / 2) + set.CenterY
+	newSet := new(MandelbrotSet)
+	newSet.CenterY = newCX
+	newSet.Side = newSide
+	newSet.CenterY = newCY
+
+	return newSet
+}
+
+func (server *RandelbrotServer) generateCandidates(set *MandelbrotSet) []*MandelbrotSet {
+	count := 12
+	retval := make([]*MandelbrotSet, count)
+	for i := 0; i < count; i++ {
+		retval[i] = server.randomChild(set)
+	}
+	
+	return retval
 }
 
 func evaluateBeauty(set *MandelbrotSet) (evaluation float64) {
