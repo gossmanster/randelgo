@@ -3,10 +3,9 @@
 package randelbrot
 
 import (
-	"math/rand"
 	"math"
+	"math/rand"
 )
-
 
 // RandelbrotServer holds the state for a server that can explore the Mandelbrot Set
 type RandelbrotServer struct {
@@ -14,7 +13,7 @@ type RandelbrotServer struct {
 	latest *MandelbrotSet
 }
 
-// RenderToBuffer actually draws a set into a PixelBuffer 
+// RenderToBuffer actually draws a set into a PixelBuffer
 func RenderToBuffer(buffer *PixelBuffer, set *MandelbrotSet) {
 	renderer := new(Renderer)
 	maxCount := set.EstimateMaxCount()
@@ -23,8 +22,6 @@ func RenderToBuffer(buffer *PixelBuffer, set *MandelbrotSet) {
 
 	renderer.RenderByCrawling(buffer, set, bandMap, maxCount)
 }
-
-
 
 // NewRandelbrotServer creates a server
 func NewRandelbrotServer(random *rand.Rand) (server *RandelbrotServer) {
@@ -44,9 +41,9 @@ func (server *RandelbrotServer) RenderNext(buffer *PixelBuffer) {
 	candidates := server.generateCandidates(server.latest)
 	best := candidates[0]
 	bestBeauty := evaluateBeauty(best)
-	for i:= 1; i < len(candidates); i++ {
+	for i := 1; i < len(candidates); i++ {
 		b := evaluateBeauty(candidates[i])
-		if (b > bestBeauty) {
+		if b > bestBeauty {
 			best = candidates[i]
 			bestBeauty = b
 		}
@@ -72,7 +69,7 @@ func (server *RandelbrotServer) generateCandidates(set *MandelbrotSet) []*Mandel
 	for i := 0; i < count; i++ {
 		retval[i] = server.randomChild(set)
 	}
-	
+
 	return retval
 }
 
@@ -88,26 +85,26 @@ func evaluateBeauty(set *MandelbrotSet) (evaluation float64) {
 
 	bandCount := renderer.RenderByCrawling(buffer, set, bandMap, maxCount)
 	evaluation = float64(bandCount)
-		
+
 	h := evaluateBuffer(buffer)
-	
+
 	pointsInSet := h.getValue(-1)
-	if (pointsInSet > 0) {
+	if pointsInSet > 0 {
 		// All black isn't pretty
-		if (pointsInSet == (bufferSize * bufferSize)) {
+		if pointsInSet == (bufferSize * bufferSize) {
 			evaluation = math.MinInt64
 			return
 		}
 		// But some black is good
 		evaluation *= 1.6
-		
+
 		// But not too much black
-		r := float64(bufferSize * bufferSize) / float64(pointsInSet) / 100.0
+		r := float64(bufferSize*bufferSize) / float64(pointsInSet) / 100.0
 		evaluation += r
 	}
-	
+
 	// More colors good
-	evaluation += float64(h.valueCount()) 
-	
+	evaluation += float64(h.valueCount())
+
 	return evaluation
 }
