@@ -4,7 +4,9 @@ package randelbrot
 
 import (
 	"math/rand"
+	"math"
 )
+
 
 // RandelbrotServer holds the state for a server that can explore the Mandelbrot Set
 type RandelbrotServer struct {
@@ -50,4 +52,40 @@ func NewRandelbrotServer(random *rand.Rand) (server *RandelbrotServer) {
 func (server *RandelbrotServer) RenderNext(buffer *PixelBuffer) {
 	RenderToBuffer(buffer, server.latest)
 	server.latest = server.randomChild(server.latest)
+}
+
+func evaluateBeauty(set *MandelbrotSet) (evaluation float64) {
+	bufferSize := 50
+	renderer := new(Renderer)
+	maxCount := set.EstimateMaxCount()
+
+	// We evaluate the set with a higher combination factor than the final
+	// render in the belief that we shouldn't overcount small details in deciding beauty
+	bandMap := NewLogarithmicBandMap(maxCount, 55.0)
+	buffer := NewPixelBuffer(bufferSize, bufferSize)
+
+	bandCount := renderer.RenderByCrawling(buffer, set, bandMap, maxCount)
+	evaluation = float64(bandCount)
+		
+	h := evaluateBuffer(buffer)
+	
+	pointsInSet := h.getValue(-1)
+	if (pointsInSet > 0) {
+		// All black isn't pretty
+		if (pointsInSet == (bufferSize * bufferSize)) {
+			evaluation = math.MinInt64
+			return
+		}
+		// But some black is good
+		evaluation *= 1.6
+		
+		// But not too much black
+		r := float64(bufferSize * bufferSize) / float64(pointsInSet) / 100.0
+		evaluation += r
+	}
+	
+	// More colors good
+	evaluation += float64(h.valueCount()) 
+	
+	return evaluation
 }
