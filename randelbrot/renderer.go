@@ -182,7 +182,7 @@ func (r *Renderer) RenderByCrawling(buffer *PixelBuffer, set *MandelbrotSet, ban
 				numberOfPointsFoundInBand = 1
 			}
 			if numberOfPointsFoundInBand > 5 {
-				if r.crawl(buffer, bandMap, i, j, band, maxCount) {
+				if r.crawl(buffer, bandMap, i, startOfBand, band, maxCount) {
 					numberOfContours++
 					fillCrawl(buffer, i, startOfBand, band)
 				}

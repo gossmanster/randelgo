@@ -9,10 +9,11 @@ import (
 	"randelgo/utils"
 	"runtime"
 	"time"
+	log "github.com/Sirupsen/logrus"
 )
 
 func main() {
-
+	log.Info("Starting Randelgo Server")
 	runtime.GOMAXPROCS(2)
 	renderChannel := make(chan *image.RGBA, 10)
 	go render(renderChannel)
@@ -36,7 +37,7 @@ func render(renderChannel chan *image.RGBA) {
 
 	for {
 
-		buffer := randelbrot.NewPixelBuffer(600, 600)
+		buffer := randelbrot.NewPixelBuffer(1000, 1000)
 		server.RenderNext(buffer)
 
 		renderChannel <- convertToImage(buffer)
