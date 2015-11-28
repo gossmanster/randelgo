@@ -1,6 +1,7 @@
 package main
 
 import (
+	log "github.com/Sirupsen/logrus"
 	"image"
 	"image/jpeg"
 	"math/rand"
@@ -9,7 +10,6 @@ import (
 	"randelgo/utils"
 	"runtime"
 	"time"
-	log "github.com/Sirupsen/logrus"
 )
 
 func main() {

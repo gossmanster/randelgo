@@ -3,9 +3,9 @@
 package randelbrot
 
 import (
+	log "github.com/Sirupsen/logrus"
 	"math"
 	"math/rand"
-	log "github.com/Sirupsen/logrus"
 )
 
 // RandelbrotServer holds the state for a server that can explore the Mandelbrot Set
@@ -55,7 +55,6 @@ func (server *RandelbrotServer) RenderNext(buffer *PixelBuffer) {
 	}).Info("Exiting RenderNext")
 }
 
-
 func (server *RandelbrotServer) randomChild(set *MandelbrotSet) *MandelbrotSet {
 	newSide := (server.random.Float64() * set.Side / 4.5) + set.Side/2
 	newCX := ((server.random.Float64() - 0.5) * set.Side / 2) + set.CenterX
@@ -86,7 +85,7 @@ func evaluateBeauty(set *MandelbrotSet) (evaluation float64) {
 	bandMap := NewLogarithmicBandMap(maxCount, 30.0)
 	buffer := NewPixelBuffer(bufferSize, bufferSize)
 
-	bandCount:= renderer.RenderByCrawling(buffer, set, bandMap, maxCount)
+	bandCount := renderer.RenderByCrawling(buffer, set, bandMap, maxCount)
 	evaluation = float64(bandCount)
 
 	h := evaluateBuffer(buffer)
@@ -105,21 +104,21 @@ func evaluateBeauty(set *MandelbrotSet) (evaluation float64) {
 		evaluation += r
 		log.WithFields(log.Fields{
 			"pointsInSet": pointsInSet,
-			"blackRatio": r,
-			"evaluation": evaluation,
-			"maxCount": maxCount,
+			"blackRatio":  r,
+			"evaluation":  evaluation,
+			"maxCount":    maxCount,
 		}).Info("adjusing beauty")
 	}
 
 	// More colors good
 	evaluation += float64(h.valueCount()) / 3
-	
+
 	// Less max count good
 	evaluation -= float64(maxCount) / 100
 
 	log.WithFields(log.Fields{
 		"colorValues": h.valueCount(),
-		"evaluation": evaluation,
+		"evaluation":  evaluation,
 	}).Info("Returning from evaluateBeauty")
 	return evaluation
 }
