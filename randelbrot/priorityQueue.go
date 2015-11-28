@@ -8,6 +8,7 @@ type item struct {
 	set        *MandelbrotSet
 	evaluation float64
 }
+
 type priorityQueue struct {
 	maxSize int
 	items   list.List
@@ -34,9 +35,9 @@ func (q *priorityQueue) push(set *MandelbrotSet, evaluation float64) {
 	// Add in order of priority, keeping the list sorted
 	added := false
 	for e := q.items.Front(); e != nil; e = e.Next() {
-		oldItem := e.Value.(item)
+		oldItem := e.Value.(*item)
 		if (newItem.evaluation > oldItem.evaluation) {
-			q.items.InsertBefore(oldItem, e)
+			q.items.InsertBefore(newItem, e)
 			added = true
 			break
 		}		
@@ -55,5 +56,5 @@ func (q *priorityQueue) pop() *MandelbrotSet {
 	top := q.items.Front()
 	q.items.Remove(top)
 	
-	return top.Value.(item).set
+	return top.Value.(*item).set
 }

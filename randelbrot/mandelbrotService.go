@@ -12,6 +12,7 @@ import (
 type RandelbrotServer struct {
 	random *rand.Rand
 	latest *MandelbrotSet
+	futures *priorityQueue
 }
 
 // RenderToBuffer actually draws a set into a PixelBuffer
@@ -32,6 +33,8 @@ func NewRandelbrotServer(random *rand.Rand) (server *RandelbrotServer) {
 	server.latest.CenterY = 0.0
 	server.latest.CenterX = -0.5
 	server.latest.Side = 2.5
+	
+	server.futures = newPriorityQueue(1000)
 
 	return server
 }
@@ -40,23 +43,20 @@ func NewRandelbrotServer(random *rand.Rand) (server *RandelbrotServer) {
 func (server *RandelbrotServer) RenderNext(buffer *PixelBuffer) {
 	RenderToBuffer(buffer, server.latest)
 	candidates := server.generateCandidates(server.latest)
-	best := candidates[0]
-	bestBeauty := evaluateBeauty(best)
-	for i := 1; i < len(candidates); i++ {
+
+	for i := 0; i < len(candidates); i++ {
 		b := evaluateBeauty(candidates[i])
-		if b > bestBeauty {
-			best = candidates[i]
-			bestBeauty = b
-		}
+		server.futures.push(candidates[i], b)
 	}
-	server.latest = best
+	server.latest = server.futures.pop()
 	log.WithFields(log.Fields{
-		"bestBeauty": bestBeauty,
-	}).Info("Exiting RenderNext")
+		"latestCX": server.latest.CenterX,
+		"latestCY": server.latest.CenterY,
+	}).Info("RenderNext Prepped")
 }
 
 func (server *RandelbrotServer) randomChild(set *MandelbrotSet) *MandelbrotSet {
-	newSide := (server.random.Float64() * set.Side / 4.5) + set.Side/2
+	newSide := (server.random.Float64() * set.Side / 4.5) + set.Side/6
 	newCX := ((server.random.Float64() - 0.5) * set.Side / 2) + set.CenterX
 	newCY := ((server.random.Float64() - 0.5) * set.Side / 2) + set.CenterY
 	newSet := new(MandelbrotSet)
