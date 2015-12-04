@@ -64,10 +64,9 @@ func (server *RandelbrotServer) randomChild(set *MandelbrotSet) *MandelbrotSet {
 	newCX := ((server.random.Float64() - 0.5) * set.Side / 1.2) + set.CenterX
 	newCY := ((server.random.Float64() - 0.5) * set.Side / 1.2) + set.CenterY
 	newSet := new(MandelbrotSet)
-	newSet.CenterY = newCX
+	newSet.CenterX = newCX
 	newSet.Side = newSide
 	newSet.CenterY = newCY
-
 	return newSet
 }
 

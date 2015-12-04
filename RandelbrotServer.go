@@ -15,7 +15,7 @@ import (
 func main() {
 	log.Info("Starting Randelgo Server")
 	runtime.GOMAXPROCS(2)
-	renderChannel := make(chan *image.RGBA, 10)
+	renderChannel := make(chan *image.RGBA, 30)
 	go render(renderChannel)
 
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
