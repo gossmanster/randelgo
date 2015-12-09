@@ -6,6 +6,7 @@ import (
 	log "github.com/Sirupsen/logrus"
 	"math"
 	"math/rand"
+	"time"
 )
 
 // RandelbrotServer holds the state for a server that can explore the Mandelbrot Set
@@ -18,6 +19,11 @@ type RandelbrotServer struct {
 
 // RenderToBuffer actually draws a set into a PixelBuffer
 func RenderToBuffer(buffer *PixelBuffer, set *MandelbrotSet) {
+	log.WithFields(log.Fields{
+		"CX":set.CenterX,
+		"CY": set.CenterY,
+		"Side": set.Side,
+	}).Info("RenderToBuffer")
 	renderer := new(Renderer)
 	maxCount := set.EstimateMaxCount()
 
@@ -49,7 +55,9 @@ func NewRandelbrotServer(random *rand.Rand) (server *RandelbrotServer) {
 // RenderNext creates the next image in a sequence
 func (server *RandelbrotServer) RenderNext(buffer *PixelBuffer) {
 	log.Info("RenderNext")
+	t := time.Now()
 	RenderToBuffer(buffer, server.latest)
+	log.Info("Evaluating Candidates")
 	candidates := server.generateCandidates(server.latest)
 
 	for i := 0; i < len(candidates); i++ {
@@ -57,6 +65,9 @@ func (server *RandelbrotServer) RenderNext(buffer *PixelBuffer) {
 		server.futures.push(candidates[i], b)
 	}
 	server.latest = server.futures.pop()
+	log.WithFields(log.Fields{
+		"Duration": time.Since(t),
+	}).Info("RenderNext done")
 }
 
 func (server *RandelbrotServer) randomChild(set *MandelbrotSet) *MandelbrotSet {
@@ -99,7 +110,7 @@ func evaluateBeauty(set *MandelbrotSet, resolution int) (evaluation float64) {
 	renderer := new(Renderer)
 	maxCount := set.EstimateMaxCount()
 
-	bandMap := NewLogarithmicBandMap(maxCount, 25.0)
+	bandMap := NewLogarithmicBandMap(maxCount, 35.0)
 	buffer := NewPixelBuffer(bufferSize, bufferSize)
 
 	bandCount := renderer.RenderByCrawling(buffer, set, bandMap, maxCount)
@@ -128,10 +139,10 @@ func evaluateBeauty(set *MandelbrotSet, resolution int) (evaluation float64) {
 	}
 
 	// More colors good
-	evaluation += float64(h.valueCount()) / 2
+	evaluation += float64(h.valueCount()) / 4
 
 	// Less max count good
-	evaluation -= float64(maxCount) / 100
+	evaluation -= float64(maxCount) / 50
 
 	//	log.WithFields(log.Fields{
 	//		"colorValues": h.valueCount(),
