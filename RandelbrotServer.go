@@ -31,8 +31,8 @@ func main() {
 func render(renderChannel chan *image.RGBA) {
 	n := int64(time.Now().Nanosecond())
 
-	r := rand.New(rand.NewSource(89))
-	rand.Seed(n)
+	r := rand.New(rand.NewSource(n))
+
 	server := randelbrot.NewRandelbrotServer(r)
 
 	for {
