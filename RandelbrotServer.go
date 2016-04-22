@@ -2,30 +2,34 @@ package main
 
 import (
 	log "github.com/Sirupsen/logrus"
+	"fmt"
 	"image"
 	"image/jpeg"
 	"math/rand"
 	"net/http"
 	"randelgo/randelbrot"
 	"randelgo/utils"
-	"runtime"
 	"time"
 )
 
 func main() {
 	log.Info("Starting Randelgo Server")
-	runtime.GOMAXPROCS(2)
 	renderChannel := make(chan *image.RGBA, 30)
 	go render(renderChannel)
+	
+	http.HandleFunc("/",func(w http.ResponseWriter, r *http.Request) {
+		fmt.Fprintln(w, "Automatic Mandelbrot Explorer\n")
+		fmt.Fprintln(w, "/newImage to get a JPG format image")
+	})
 
-	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+	http.HandleFunc("/newImage", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "image/jpeg")
 
 		m := <-renderChannel
 
 		jpeg.Encode(w, m, nil)
 	})
-	http.ListenAndServe(":1966", nil)
+	http.ListenAndServe(":80", nil)
 }
 
 func render(renderChannel chan *image.RGBA) {
