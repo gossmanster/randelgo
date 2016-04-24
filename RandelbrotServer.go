@@ -17,9 +17,7 @@ func main() {
 	log.Info("Starting Randelgo Server")
 	
 	stats := initialServerStats()
-	
-	
-	
+		
 	renderChannel := make(chan *image.RGBA, 30)
 	go render(renderChannel)
 	
@@ -31,6 +29,7 @@ func main() {
 		name, _ := os.Hostname()
 		fmt.Fprintln(w, "<br>Hostname = ", name)
 		fmt.Fprintln(w, "<br><a href=\"/newImage\">/newImage</a> to get a JPG format image")
+		fmt.Fprintln(w, "<br><a href=\"/stats\">/stats</a> to get server statistics")
 	})
 
 	http.HandleFunc("/newImage", func(w http.ResponseWriter, r *http.Request) {
