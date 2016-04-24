@@ -15,8 +15,15 @@ import (
 
 func main() {
 	log.Info("Starting Randelgo Server")
+	
+	stats := initialServerStats()
+	
+	
+	
 	renderChannel := make(chan *image.RGBA, 30)
 	go render(renderChannel)
+	
+	http.HandleFunc("/stats", stats.handler)
 	
 	http.HandleFunc("/",func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "text/html; charset=utf-8")
