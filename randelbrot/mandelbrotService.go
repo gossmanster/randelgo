@@ -82,12 +82,14 @@ func (server *RandelbrotServer) randomChild(set *MandelbrotSet) *MandelbrotSet {
 }
 
 func (server *RandelbrotServer) generateCandidates(set *MandelbrotSet) []*MandelbrotSet {
-	count := 5
+	count := 6
 	retval := make([]*MandelbrotSet, 0)
 	for i := 0; i < count; i++ {
 		retval = append(retval, server.randomChild(set))
-		retval = append(retval, server.randomChild(server.root))
 	}
+	
+	// Also start some new children near the top so that the system doesn't only zoom in
+	retval = append(retval, server.randomChild(server.root))
 
 	return retval
 }
@@ -99,8 +101,8 @@ func multiLevelEvaluation(set *MandelbrotSet) (evaluation float64) {
 	set2.CenterY = set.CenterY
 	set2.Side = set.Side / 2.0
 
-	evaluation = evaluateBeauty(set, 40)
-	evaluation += evaluateBeauty(set2, 80)
+	evaluation = evaluateBeauty(set, 50)
+	evaluation += evaluateBeauty(set2, 60)
 
 	return
 }
@@ -125,7 +127,7 @@ func evaluateBeauty(set *MandelbrotSet, resolution int) (evaluation float64) {
 			evaluation = math.MinInt64
 		}
 		// But some black is good
-		evaluation *= 2
+		evaluation *= 1.6
 
 		// But not too much black
 		//		r := float64(bufferSize*bufferSize) / float64(pointsInSet) / 1.0
@@ -142,7 +144,7 @@ func evaluateBeauty(set *MandelbrotSet, resolution int) (evaluation float64) {
 	evaluation += float64(h.valueCount()) / 4
 
 	// Less max count good
-	evaluation -= float64(maxCount) / 50
+	evaluation -= float64(maxCount) / 60
 
 	//	log.WithFields(log.Fields{
 	//		"colorValues": h.valueCount(),
