@@ -7,7 +7,6 @@ import (
 	"image/jpeg"
 	"math/rand"
 	"net/http"
-	"os"
 	"randelgo/randelbrot"
 	"randelgo/utils"
 	"time"
@@ -26,8 +25,6 @@ func main() {
 	http.HandleFunc("/",func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "text/html; charset=utf-8")
 		fmt.Fprintln(w, "<h1>Automatic Mandelbrot Explorer</h1>")
-		name, _ := os.Hostname()
-		fmt.Fprintln(w, "<br>Hostname = ", name)
 		fmt.Fprintln(w, "<br><a href=\"/newImage\">/newImage</a> to get a JPG format image")
 		fmt.Fprintln(w, "<br><a href=\"/stats\">/stats</a> to get server statistics")
 	})
@@ -38,6 +35,7 @@ func main() {
 		m := <-renderChannel
 
 		jpeg.Encode(w, m, nil)
+		stats.ImagesServed++
 	})
 	http.ListenAndServe(":80", nil)
 }

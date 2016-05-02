@@ -5,17 +5,21 @@ import (
     "encoding/json"
 	// "fmt"
 	"net/http"
+	"os"
 	"time"
 )
 
 type serverStats struct {
     StartTime time.Time `json:"StartTime"`
-	Uptime string `json:"Uptime"`   
+	Uptime string `json:"Uptime"`  
+	Hostname string `json:"Hostname"`
+	ImagesServed int64 `json:"ImagesServed"`
 }
 
 func initialServerStats() *serverStats {
     stats := new(serverStats)
-    stats.StartTime = time.Now()  
+    stats.StartTime = time.Now()
+	stats.Hostname, _ = os.Hostname()
 	
 	return stats
 }
