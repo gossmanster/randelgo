@@ -11,9 +11,9 @@ type MandelbrotSet struct {
 }
 
 // EstimateMaxCount guesses how many max iterations should be used to render this location
-func (m *MandelbrotSet) EstimateMaxCount() int {
+func (m *MandelbrotSet) EstimateMaxCount(multiplier float64) int {
 	t := math.Log(1.0 / m.Side)
-	t = t * 120
+	t = t * multiplier
 	return int(t + 600)
 }
 

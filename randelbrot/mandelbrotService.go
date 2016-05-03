@@ -25,7 +25,7 @@ func RenderToBuffer(buffer *PixelBuffer, set *MandelbrotSet) {
 		"Side": set.Side,
 	}).Info("RenderToBuffer")
 	renderer := new(Renderer)
-	maxCount := set.EstimateMaxCount()
+	maxCount := set.EstimateMaxCount(120)
 
 	bandMap := NewLogarithmicBandMap(maxCount, 42.0)
 
@@ -110,7 +110,7 @@ func multiLevelEvaluation(set *MandelbrotSet) (evaluation float64) {
 func evaluateBeauty(set *MandelbrotSet, resolution int) (evaluation float64) {
 	bufferSize := resolution
 	renderer := new(Renderer)
-	maxCount := set.EstimateMaxCount()
+	maxCount := set.EstimateMaxCount(80)
 
 	bandMap := NewLogarithmicBandMap(maxCount, 35.0)
 	buffer := NewPixelBuffer(bufferSize, bufferSize)
