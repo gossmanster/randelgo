@@ -28,9 +28,9 @@ func NewDefaultPalette() *Palette {
 		b := float64(i) * (radianNorm + 0.11)
 		g := float64(i+100)*(radianNorm-0.055) - 2.6
 
-		retval.Colors[i].R = uint8(math.Abs(math.Sin(r))*256.0) + 16
-		retval.Colors[i].G = uint8(math.Abs(math.Sin(g) * 256.0))
-		retval.Colors[i].B = uint8(math.Abs(math.Sin(b)) * 256.0)
+		retval.Colors[i].R = uint8(math.Abs(math.Sin(r))*239.0) + 16
+		retval.Colors[i].G = uint8(math.Abs(math.Sin(g) * 255.0))
+		retval.Colors[i].B = uint8(math.Abs(math.Sin(b)) * 255.0)
 
 		retval.Colors[i].A = uint8(255)
 	}
