@@ -13,7 +13,7 @@ type MandelbrotSet struct {
 // EstimateMaxCount guesses how many max iterations should be used to render this location
 func (m *MandelbrotSet) EstimateMaxCount() int {
 	t := math.Log(1.0 / m.Side)
-	t = t * 100
+	t = t * 120
 	return int(t + 600)
 }
 
