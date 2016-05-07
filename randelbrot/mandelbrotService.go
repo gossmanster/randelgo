@@ -25,9 +25,9 @@ func RenderToBuffer(buffer *PixelBuffer, set *MandelbrotSet) {
 		"Side": set.Side,
 	}).Info("RenderToBuffer")
 	renderer := new(Renderer)
-	maxCount := set.EstimateMaxCount(120)
+	maxCount := set.EstimateMaxCount(150)
 
-	bandMap := NewLogarithmicBandMap(maxCount, 42.0)
+	bandMap := NewLogarithmicBandMap(maxCount, 50.0)
 
 	renderer.RenderByCrawling(buffer, set, bandMap, maxCount)
 }

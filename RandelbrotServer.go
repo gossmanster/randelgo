@@ -9,6 +9,7 @@ import (
 	"net/http"
 	"randelgo/randelbrot"
 	"randelgo/utils"
+	. "sync/atomic"
 	"time"
 )
 
@@ -35,7 +36,7 @@ func main() {
 		m := <-renderChannel
 
 		jpeg.Encode(w, m, nil)
-		stats.ImagesServed++
+		AddInt64(&(stats.ImagesServed), 1)
 	})
 	http.ListenAndServe(":80", nil)
 }
