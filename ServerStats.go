@@ -15,6 +15,7 @@ type serverStats struct {
 	Uptime string `json:"Uptime"`  
 	Hostname string `json:"Hostname"`
 	ImagesServed int64 `json:"ImagesServed"`
+	ChannelLength int `json:"ChannelLength"`
 }
 
 func initialServerStats() *serverStats {
