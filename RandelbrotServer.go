@@ -1,7 +1,6 @@
 package main
 
 import (
-	log "github.com/Sirupsen/logrus"
 	"fmt"
 	"image"
 	"image/jpeg"
@@ -11,19 +10,21 @@ import (
 	"randelgo/utils"
 	. "sync/atomic"
 	"time"
+
+	log "github.com/Sirupsen/logrus"
 )
 
 func main() {
 	log.Info("Starting Randelgo Server")
-	
+
 	stats := initialServerStats()
-		
+
 	renderChannel := make(chan *image.RGBA, 30)
 	go render(renderChannel)
-	
+
 	http.HandleFunc("/stats", stats.handler)
-	
-	http.HandleFunc("/",func(w http.ResponseWriter, r *http.Request) {
+
+	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "text/html; charset=utf-8")
 		fmt.Fprintln(w, "<h1>Automatic Mandelbrot Explorer</h1>")
 		fmt.Fprintln(w, "<br><a href=\"/newImage\">/newImage</a> to get a JPG format image")
@@ -37,6 +38,7 @@ func main() {
 
 		jpeg.Encode(w, m, nil)
 		AddInt64(&(stats.ImagesServed), 1)
+		stats.ChannelLength = len(renderChannel)
 	})
 	http.ListenAndServe(":80", nil)
 }
